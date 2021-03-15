@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Grpc.Net.Client;
-using gRPCContagem;
 
-namespace ClientgRPCContagem
+namespace gRPCHitsClient
 {
     class Program
     {
         private const string SERVER_GRPC = "https://localhost:5001";
-        //private const string SERVER_GRPC = "http://localhost:25001";
-        //private const string SERVER_GRPC = "http://52.186.82.56";
 
         public static async Task Main()
         {
@@ -20,20 +17,21 @@ namespace ClientgRPCContagem
             }
 
             var channel = GrpcChannel.ForAddress(SERVER_GRPC);
-            var client = new ContadorSvc.ContadorSvcClient(channel);
+            var client = new CounterSvc.CounterSvcClient(channel);
 
             while (true)
             {
-                var resultado = await client.GerarValorAsync(
-                    new ContadorRequest()
+                var result = await client.GenerateValueAsync(
+                    new CounterRequest()
                     {
-                        Nome = "Renato"
+                        Name = "Lucas"
                     });
+
                 Console.WriteLine(
-                    $"| Mensagem: {resultado.Mensagem} " +
-                    $"| Valor Atual: {resultado.ValorAtual} " +
-                    $"| Local: {resultado.LocalSvc} " +
-                    $"| Target Framework: {resultado.TargetFramework} |");
+                    $"| Message: {result.Message} " +
+                    $"| Current Value: {result.CurrentValue} " +
+                    $"| Local: {result.LocalSvc} " +
+                    $"| Target Framework: {result.TargetFramework} |");
 
                 Console.ReadKey();
             }
