@@ -12,8 +12,38 @@ namespace gRPCHitsClient {
   {
     static readonly string __ServiceName = "Cont.CounterSvc";
 
-    static readonly grpc::Marshaller<global::gRPCHitsClient.CounterRequest> __Marshaller_Cont_CounterRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::gRPCHitsClient.CounterRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::gRPCHitsClient.CounterReply> __Marshaller_Cont_CounterReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::gRPCHitsClient.CounterReply.Parser.ParseFrom);
+    static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (message is global::Google.Protobuf.IBufferMessage)
+      {
+        context.SetPayloadLength(message.CalculateSize());
+        global::Google.Protobuf.MessageExtensions.WriteTo(message, context.GetBufferWriter());
+        context.Complete();
+        return;
+      }
+      #endif
+      context.Complete(global::Google.Protobuf.MessageExtensions.ToByteArray(message));
+    }
+
+    static class __Helper_MessageCache<T>
+    {
+      public static readonly bool IsBufferMessage = global::System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(global::Google.Protobuf.IBufferMessage)).IsAssignableFrom(typeof(T));
+    }
+
+    static T __Helper_DeserializeMessage<T>(grpc::DeserializationContext context, global::Google.Protobuf.MessageParser<T> parser) where T : global::Google.Protobuf.IMessage<T>
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (__Helper_MessageCache<T>.IsBufferMessage)
+      {
+        return parser.ParseFrom(context.PayloadAsReadOnlySequence());
+      }
+      #endif
+      return parser.ParseFrom(context.PayloadAsNewBuffer());
+    }
+
+    static readonly grpc::Marshaller<global::gRPCHitsClient.CounterRequest> __Marshaller_Cont_CounterRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::gRPCHitsClient.CounterRequest.Parser));
+    static readonly grpc::Marshaller<global::gRPCHitsClient.CounterReply> __Marshaller_Cont_CounterReply = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::gRPCHitsClient.CounterReply.Parser));
 
     static readonly grpc::Method<global::gRPCHitsClient.CounterRequest, global::gRPCHitsClient.CounterReply> __Method_GenerateValue = new grpc::Method<global::gRPCHitsClient.CounterRequest, global::gRPCHitsClient.CounterReply>(
         grpc::MethodType.Unary,
